@@ -23,10 +23,15 @@ const server = app.listen(app.get('port'), () => {
 // Initialize Socket.io
 const SocketIO = require('socket.io');
 
-// Keep the running server in a constant to work with
+// Storage the running server in a constant to work with
 const io = SocketIO.listen(server);
 
 // WebSockets
+// Listen new client connections
 io.on('connection', (socket) => {
   console.log('new connection', socket.id);
+  // Receive the data (msg) and resend 'em to all clients/browsers
+  socket.on('chat:messageFromBrowser', (data) => {
+    io.sockets.emit('chat:messageFromServer', data)
+  })
 });
