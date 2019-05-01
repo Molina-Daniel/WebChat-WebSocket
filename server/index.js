@@ -30,8 +30,13 @@ const io = SocketIO.listen(server);
 // Listen new client connections
 io.on('connection', (socket) => {
   console.log('new connection', socket.id);
-  // Receive the data (msg) and resend 'em to all clients/browsers
+  // Receive the data (msg) and resend it to all users/browsers
   socket.on('chat:messageFromBrowser', (data) => {
     io.sockets.emit('chat:messageFromServer', data)
   })
+
+  // Receive the user who is typing from the server
+  socket.on('chat:typing', (data) => {
+    socket.broadcast.emit('chat:typing', data);
+  });
 });
